@@ -20,6 +20,7 @@ import campaigns
 import cdn
 import elasticsearch
 import graphite
+import heka
 import incident
 import kernel
 import licensify
