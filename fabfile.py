@@ -229,15 +229,15 @@ def help(name):
 
 @task
 def production():
-    """Select production environment"""
-    env['environment'] = 'production'
-    _set_gateway('production.alphagov.co.uk')
-
-@task
-def production_migration():
     """Select production migration environment"""
     env['environment'] = 'production'
     _set_gateway('publishing.service.gov.uk')
+
+@task
+def old_production():
+    """Select production environment"""
+    env['environment'] = 'production'
+    _set_gateway('production.alphagov.co.uk')
 
 @task
 def staging():
