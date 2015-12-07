@@ -66,9 +66,8 @@ def clear_static_generated_templates():
     This function clears the public/template directory to force it to
     be regenerated to include the emergency campaign.
     """
-    for template in ('wrapper.html.erb', 'header_footer_only.html.erb'):
+    for template in ('wrapper.html.erb', 'header_footer_only.html.erb', 'core_layout.html.erb'):
         sudo('rm /var/apps/static/public/templates/{}'.format(template))
-
 
 def deploy_banner(application):
     execute(template, application)
