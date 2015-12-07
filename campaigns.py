@@ -105,11 +105,14 @@ def deploy_emergency_banner():
     execute(set_context)
     for application in APPLICATIONS:
         deploy_banner(application)
-
+    for application in APPLICATIONS:
+        deploy_banner(application)
 
 @task
 @roles('class-frontend')
 def remove_emergency_banner():
     """Remove all banners from GOV.UK"""
+    for application in APPLICATIONS:
+        remove_banner(application)
     for application in APPLICATIONS:
         remove_banner(application)
