@@ -1,2 +1,4 @@
 -r requirements.txt
 flake8==2.5.1
+pep8==1.6.2
+pyflakes==1.0.0
