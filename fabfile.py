@@ -96,7 +96,8 @@ class RoleFetcher(object):
             return
 
         self.hosts = _fetch_hosts()
-        self.roledefs['disaster_recovery'] = _fetch_hosts('--dr-only')
+        if not is_aws:
+            self.roledefs['disaster_recovery'] = _fetch_hosts('--dr-only')
 
         for host in self.hosts:
             try:
@@ -127,6 +128,14 @@ class RoleFetcher(object):
 
         hosts = _fetch_hosts('-C %s' % name)
         self.roledefs['puppet_class-%s' % name] = hosts
+
+    def fetch_node_class(self, name):
+        # This is specifically for AWS as we fetch node classes using tags
+        if self.roledefs['puppet_class-%s' % name]:
+            return
+
+        hosts = _fetch_hosts('-c %s' % name)
+        self.roledefs['class-%s' % name] = hosts
 
     def __contains__(self, key):
         return True
@@ -286,6 +295,16 @@ def integration():
 
 
 @task
+def aws(environment, stackname):
+    """Select AWS environment"""
+    global is_aws
+    is_aws = True
+    env['environment'] = environment
+    _set_gateway("{}.{}.govuk.digital".format(stackname, environment))
+    _replace_environment_hostnames('{}.{}'.format(stackname, environment))
+
+
+@task
 def all():
     """Select all machines in current environment"""
     env.hosts.extend(env.roledefs['all']())
@@ -306,6 +325,10 @@ def klass(*class_names):
     """Select a machine class"""
     for class_name in class_names:
         class_name = class_name.replace("-", "_")
+
+        if is_aws:
+            env.roledefs.fetch_node_class(class_name)
+
         env.hosts.extend(env.roledefs['class-%s' % class_name]())
 
 
